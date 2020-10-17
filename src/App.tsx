@@ -1,49 +1,30 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { getRandomColor, getRandomRect } from './utils';
-
-const contextOptions: CanvasRenderingContext2DSettings = {alpha: true}
 
 function Canvas({width, height}: {width: number, height: number}) {
-
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const workerRef = useRef<Worker | null>(null)
 
   useLayoutEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current!
+    const worker =  new Worker('./offscreen.worker.ts')
+    workerRef.current = worker
 
+    const offscreen = canvas.transferControlToOffscreen();
+    worker.postMessage({type: 'init', canvas: offscreen}, [offscreen]);
+
+    return () => worker.terminate()
+  }, [])
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current!
     canvas.setAttribute('width', `${width}`)
     canvas.setAttribute('height', `${height}`)
     canvas.style.width = `${width}px`
     canvas.style.height = `${height}px`
+    workerRef.current?.postMessage({type: 'dimensions', width, height});
   }, [width, height])
 
-  useLayoutEffect(() => {
-    let currentFrame: number
-    function render() {
-      const canvas = canvasRef.current
-      if (!canvas) return
-
-      const context = canvas.getContext('2d', contextOptions)
-      if (!context) return
-
-      context.clearRect(0, 0, canvas.width, canvas.height)
-
-      context.save()
-
-      context.setTransform(1, 0, 0, 1, 0, 0)
-
-      context.fillStyle = getRandomColor()
-      context.fillRect(...getRandomRect())
-
-      context.restore()
-
-      currentFrame = requestAnimationFrame(render)
-    }
-    render()
-    return () => cancelAnimationFrame(currentFrame)
-  }, [])
-
-  return   <canvas ref={canvasRef} />
+  return <canvas ref={canvasRef} />
 }
 
 function App() {
