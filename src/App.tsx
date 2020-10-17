@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import { getRandomColor, getRandomRect } from './utils';
 
 const contextOptions: CanvasRenderingContext2DSettings = {alpha: true}
 
@@ -31,8 +32,8 @@ function Canvas({width, height}: {width: number, height: number}) {
 
       context.setTransform(1, 0, 0, 1, 0, 0)
 
-      context.fillStyle = 'red'
-      context.fillRect(5, 5, 50, 80)
+      context.fillStyle = getRandomColor()
+      context.fillRect(...getRandomRect())
 
       context.restore()
 
@@ -57,7 +58,13 @@ function App() {
   }, [])
 
   return (
-    <div ref={containerRef} style={{width: '100%', height: '100%', backgroundColor: '#333'}}>
+    <div ref={containerRef} style={{position: 'relative', width: '100%', height: '100%', backgroundColor: '#333'}}>
+      <button type="button" style={{position: 'absolute', top: 5, right: 5}} onClick={() => {
+        const now = performance.now()
+        while(performance.now() - now < 2000) {
+          // just loop
+        }
+      }}>Block main thread</button>
       {!!dims.width && !!dims.height && <Canvas {...dims} />}
     </div>
   );
