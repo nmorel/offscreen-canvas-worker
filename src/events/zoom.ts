@@ -2,10 +2,10 @@ import {
   KeyboardEvent as RKeyboardEvent,
   MouseEvent as RMouseEvent,
 } from "react";
-import { OffscreenContext } from "../helpers/context";
+import { OffscreenContext } from "../context";
 
 import { modifierKey } from "../helpers/keys";
-import { NormalizedEvent, Position } from "../typings/events";
+import { NormalizedEvent, Position } from "../typings";
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 1000;

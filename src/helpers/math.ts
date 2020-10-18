@@ -1,4 +1,4 @@
-import { Point } from "../typings/events"
+import { Point } from "../typings";
 
 /**
  * Calculate the distance between 2 points
@@ -9,10 +9,15 @@ import { Point } from "../typings/events"
  * @param y2 second point y
  * @returns the calculated distance
  */
-export function getDistanceBetweenTwoPoints(x1: number, y1: number, x2: number, y2: number) {
-    const dx = x1 - x2
-    const dy = y1 - y2
-    return Math.sqrt(dx * dx + dy * dy)
+export function getDistanceBetweenTwoPoints(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+) {
+  const dx = x1 - x2;
+  const dy = y1 - y2;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 
 /**
@@ -25,13 +30,13 @@ export function getDistanceBetweenTwoPoints(x1: number, y1: number, x2: number, 
  * @returns the center point
  */
 export function getCenterPointBetweenTwoPoints(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
 ): Point {
-    return {
-        x: x1 + (x2 - x1) / 2,
-        y: y1 + (y2 - y1) / 2,
-    }
+  return {
+    x: x1 + (x2 - x1) / 2,
+    y: y1 + (y2 - y1) / 2,
+  };
 }

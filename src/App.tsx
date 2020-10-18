@@ -1,11 +1,10 @@
-import { reaction } from "mobx";
 import React, { useLayoutEffect, useRef, useState } from "react";
+import { Canvas } from "./canvas/Canvas";
 import {
   ContextProvider,
   OffscreenContext,
   useOffscreenContext,
-} from "./helpers/context";
-import { EventHandler } from "./helpers/eventHandler";
+} from "./context";
 import { InteractionListener } from "./helpers/listener";
 
 function EventContainer({ children }: { children: React.ReactNode }) {
@@ -13,11 +12,7 @@ function EventContainer({ children }: { children: React.ReactNode }) {
   const ctx = useOffscreenContext();
 
   useLayoutEffect(() => {
-    const listener = new InteractionListener(
-      ref.current!,
-      new EventHandler(ctx),
-      ctx
-    );
+    const listener = new InteractionListener(ref.current!, ctx);
     listener.init();
     return () => listener.destroy();
   }, []);
@@ -27,52 +22,6 @@ function EventContainer({ children }: { children: React.ReactNode }) {
       {children}
     </div>
   );
-}
-
-function Canvas({ width, height }: { width: number; height: number }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const workerRef = useRef<Worker | null>(null);
-  const ctx = useOffscreenContext();
-
-  useLayoutEffect(() => {
-    const canvas = canvasRef.current!;
-    const worker = new Worker("./offscreen.worker.ts");
-    workerRef.current = worker;
-
-    const offscreen = canvas.transferControlToOffscreen();
-    worker.postMessage({ type: "init", canvas: offscreen }, [offscreen]);
-
-    const interval = setInterval(() => {
-      worker.postMessage({ type: "update" });
-    }, 2000);
-
-    const viewportReaction = reaction(
-      () => ({
-        type: "viewport",
-        tx: ctx.store.viewport.tx,
-        ty: ctx.store.viewport.ty,
-        scale: ctx.store.viewport.scale,
-      }),
-      (message) => worker.postMessage(message)
-    );
-
-    return () => {
-      viewportReaction();
-      worker.terminate();
-      clearInterval(interval);
-    };
-  }, []);
-
-  useLayoutEffect(() => {
-    const canvas = canvasRef.current!;
-    canvas.setAttribute("width", `${width}`);
-    canvas.setAttribute("height", `${height}`);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    workerRef.current?.postMessage({ type: "dimensions", width, height });
-  }, [width, height]);
-
-  return <canvas ref={canvasRef} />;
 }
 
 function App() {

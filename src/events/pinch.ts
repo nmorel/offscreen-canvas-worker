@@ -1,5 +1,4 @@
-import { OffscreenContext } from "../helpers/context";
-import { EventHandler } from "../helpers/eventHandler";
+import { OffscreenContext } from "../context";
 import {
   getCenterPointBetweenTwoPoints,
   getDistanceBetweenTwoPoints,
@@ -10,14 +9,11 @@ import {
   ParamsAction,
   PinchAction,
   RegisteredEvent,
-} from "../typings/events";
+} from "../typings";
 import { zoom } from "./zoom";
 
-export const pinch = (
-  { ctx, action }: ParamsAction<PinchAction>,
-  eventHandler: EventHandler
-) => {
-  const [first, sec] = Array.from(eventHandler.pointers.values());
+export const pinch = ({ ctx, action }: ParamsAction<PinchAction>) => {
+  const [first, sec] = Array.from(ctx.store.interaction.pointers.values());
   const newDistance = getDistanceBetweenTwoPoints(
     first.lastEvent.clientX,
     first.lastEvent.clientY,

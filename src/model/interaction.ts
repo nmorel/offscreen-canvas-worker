@@ -8,16 +8,17 @@ import {
   ActionType,
   Action,
   PanAction,
-} from "../typings/events";
-import { OffscreenContext } from "./context";
-import { getDistanceBetweenTwoPoints } from "./math";
+} from "../typings";
+import { OffscreenContext } from "../context";
+import { getDistanceBetweenTwoPoints } from "../helpers/math";
 
 export const LEFT_CLICK = 1;
 export const MIDDLE_CLICK = 2;
 export const RIGHT_CLICK = 3;
 
-export class EventHandler {
+export class InteractionHandler {
   ctx: OffscreenContext;
+
   pointers = observable.map<string, RegisteredEvent>({}, { deep: false });
 
   constructor(ctx: OffscreenContext) {

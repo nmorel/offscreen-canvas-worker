@@ -1,4 +1,4 @@
-import { AnimateMode, PanAction, ParamsAction } from "../typings/events";
+import { AnimateMode, PanAction, ParamsAction } from "../typings";
 
 export const pan = ({
   ctx: {

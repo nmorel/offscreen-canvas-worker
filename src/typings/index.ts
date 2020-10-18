@@ -1,4 +1,4 @@
-import { OffscreenContext } from "../helpers/context";
+import { OffscreenContext } from "../context";
 
 export type Point = {
   x: number;
@@ -104,10 +104,10 @@ export type RegisteredEvent = {
 };
 
 export type ParamsAction<T extends Action> = {
-  ctx: OffscreenContext
+  ctx: OffscreenContext;
   // targetObject?: IBoardObject | IActiveSelection
-  downEvent: Pointer
-  prevEvent: Pointer
-  lastEvent: Pointer
-  action: T
-}
+  downEvent: Pointer;
+  prevEvent: Pointer;
+  lastEvent: Pointer;
+  action: T;
+};

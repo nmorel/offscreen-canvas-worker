@@ -1,9 +1,9 @@
 import { makeObservable, observable } from "mobx";
-import { Store } from "../store";
+import { Store } from "./model/store";
 import React, { createContext, ReactNode, useContext } from "react";
 
 export class OffscreenContext {
-  store = new Store();
+  store = new Store(this);
 
   constructor() {
     makeObservable(this, {
