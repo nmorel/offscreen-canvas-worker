@@ -173,4 +173,5 @@ export interface CornerPoints {
 
 export enum ObjectType {
   rectangle = "rectangle",
+  image = "image",
 }
