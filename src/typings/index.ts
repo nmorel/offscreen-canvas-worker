@@ -111,3 +111,66 @@ export type ParamsAction<T extends Action> = {
   lastEvent: Pointer;
   action: T;
 };
+
+export type Coords = {
+  left: number;
+  top: number;
+};
+
+export type Scale = {
+  scaleX: number;
+  scaleY: number;
+};
+
+export type Skew = {
+  skewX: number;
+  skewY: number;
+};
+
+export type Matrix = [number, number, number, number, number, number];
+
+export enum OriginX {
+  left = "left",
+  center = "center",
+  right = "right",
+}
+
+export enum OriginY {
+  top = "top",
+  center = "center",
+  bottom = "bottom",
+}
+
+export interface ObjectGeometry {
+  originX: OriginX;
+  originY: OriginY;
+  width: number;
+  height: number;
+  coords: Coords;
+  scale: Scale;
+  skew: Skew;
+  angle: number;
+  strokeWidth: number;
+}
+
+export enum Corner {
+  tl = "tl",
+  tr = "tr",
+  bl = "bl",
+  br = "br",
+  ml = "ml",
+  mt = "mt",
+  mr = "mr",
+  mb = "mb",
+}
+
+export interface CornerPoints {
+  [Corner.tl]: Point;
+  [Corner.tr]: Point;
+  [Corner.bl]: Point;
+  [Corner.br]: Point;
+}
+
+export enum ObjectType {
+  rectangle = "rectangle",
+}

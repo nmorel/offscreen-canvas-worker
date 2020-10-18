@@ -23,10 +23,6 @@ export function Canvas() {
       [offscreen]
     );
 
-    const interval = setInterval(() => {
-      worker.postMessage({ type: "update" });
-    }, 2000);
-
     const screenSizeReaction = reaction(
       () => ({
         type: "dimensions",
@@ -46,11 +42,15 @@ export function Canvas() {
       (message) => worker.postMessage(message)
     );
 
+    worker.postMessage({
+      type: "objects.init",
+      objects: ctx.store.objects.items.map(obj => obj.transferableData())
+    })
+
     return () => {
       screenSizeReaction();
       viewportReaction();
       worker.terminate();
-      clearInterval(interval);
     };
   }, []);
 
