@@ -4,12 +4,6 @@ import React, { createContext, ReactNode, useContext } from "react";
 
 export class OffscreenContext {
   store = new Store(this);
-
-  constructor() {
-    makeObservable(this, {
-      store: observable.shallow,
-    });
-  }
 }
 
 const ReactContext = createContext<OffscreenContext>(null as any);

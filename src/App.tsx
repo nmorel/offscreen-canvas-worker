@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { Canvas } from "./canvas/Canvas";
 import { useOffscreenContext } from "./context";
 import { InteractionListener } from "./helpers/listener";
+import { hasOffscreenCanvas } from "./helpers/offscreenCanvas";
 
 function EventContainer({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -46,21 +47,32 @@ const App = observer(function App() {
         backgroundColor: "#333",
       }}
     >
-      <button
-        type="button"
-        style={{ position: "absolute", top: 5, right: 5 }}
-        onClick={() => {
-          const now = performance.now();
-          while (performance.now() - now < 2000) {
-            // just loop
-          }
-        }}
-      >
-        Block main thread
-      </button>
+      <div style={{ position: "absolute", top: 5, right: 5 }}>
+        <button
+          type="button"
+          onClick={() => {
+            const now = performance.now();
+            while (performance.now() - now < 2000) {
+              // just loop
+            }
+          }}
+        >
+          Block main thread
+        </button>
+        {hasOffscreenCanvas && (
+          <button
+            type="button"
+            onClick={() => {
+              ctx.store.setUseOffscreenCanvas(!ctx.store.useOffscreenCanvas)
+            }}
+          >
+            {ctx.store.useOffscreenCanvas ? 'Use classic' : 'Use offscreen'}
+          </button>
+        )}
+      </div>
       {!!ctx.store.screenSize.width && !!ctx.store.screenSize.height && (
         <EventContainer>
-          <Canvas />
+          <Canvas key={ctx.store.useOffscreenCanvas ? 'offscreen' : 'classic'} />
         </EventContainer>
       )}
     </div>

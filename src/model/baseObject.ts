@@ -1,6 +1,6 @@
 import { computed, makeObservable, observable } from "mobx";
 import { OffscreenContext } from "../context";
-import { calcDisplayedMatrix } from "../helpers/math";
+import { calcDisplayedMatrixAndBounds } from "../helpers/math";
 import {
   Coords,
   ObjectGeometry,
@@ -73,21 +73,32 @@ export abstract class BaseObject implements ObjectGeometry {
 
       width: computed,
       height: computed,
+      matrixAndBounds: computed,
       matrix: computed,
+      bounds: computed,
     });
   }
 
   abstract get width(): number
   abstract get height(): number
 
+  get matrixAndBounds() {
+    return calcDisplayedMatrixAndBounds(this);
+  }
+
   get matrix() {
-    return calcDisplayedMatrix(this);
+    return this.matrixAndBounds.matrix
+  }
+
+  get bounds() {
+    return this.matrixAndBounds.bounds
   }
 
   transferableData() {
     return {
       id: this.id,
       objectType: this.objectType,
+      bounds: this.bounds,
       matrix: this.matrix,
     }
   }

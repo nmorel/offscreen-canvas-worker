@@ -5,6 +5,7 @@ import {
   OriginY,
   ObjectGeometry,
   CornerPoints,
+  Bounds,
 } from "../typings";
 
 const PiBy180 = Math.PI / 180,
@@ -382,13 +383,51 @@ function getNonTransformedDimensions(object: ObjectGeometry) {
 }
 
 /**
+ * Calculates the displayed coords of the object's corner points
+ *
+ * @param object Object
+ * @returns corner points
+ */
+function calcDisplayedCornerPoints(
+  object: ObjectGeometry,
+  relativeMatrix: Matrix
+) {
+  const dimensions = getNonTransformedDimensions(object);
+  const w = dimensions.width / 2;
+  const h = dimensions.height / 2;
+  return {
+    tl: transformPoint({ x: -w, y: -h }, relativeMatrix),
+    tr: transformPoint({ x: w, y: -h }, relativeMatrix),
+    bl: transformPoint({ x: -w, y: h }, relativeMatrix),
+    br: transformPoint({ x: w, y: h }, relativeMatrix),
+  };
+}
+
+function calcBounds({ tl, tr, br, bl }: CornerPoints) {
+  const minX = Math.min(tl.x, tr.x, br.x, bl.x);
+  const maxX = Math.max(tl.x, tr.x, br.x, bl.x);
+  const minY = Math.min(tl.y, tr.y, br.y, bl.y);
+  const maxY = Math.max(tl.y, tr.y, br.y, bl.y);
+  return {
+    left: minX,
+    top: minY,
+    right: maxX,
+    bottom: maxY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+}
+
+/**
  * Calculates the object's displayed matrix
  * Its origin is the top left corner of the shape
  *
  * @param object Object
  * @returns the bounds
  */
-export function calcDisplayedMatrix(object: ObjectGeometry): Matrix {
+export function calcDisplayedMatrixAndBounds(
+  object: ObjectGeometry
+): { matrix: Matrix; bounds: Bounds } {
   const transformMatrix = calcTransformMatrix(
     object.scale.scaleX,
     object.scale.scaleY,
@@ -404,19 +443,19 @@ export function calcDisplayedMatrix(object: ObjectGeometry): Matrix {
     transformMatrix
   );
 
-  const dimensions = getNonTransformedDimensions(object);
-  const w = dimensions.width / 2;
-  const h = dimensions.height / 2;
-  const origin = transformPoint({ x: -w, y: -h }, relativeMatrix);
+  const cornerPoints = calcDisplayedCornerPoints(object, relativeMatrix);
 
-  return [
-    relativeMatrix[0],
-    relativeMatrix[1],
-    relativeMatrix[2],
-    relativeMatrix[3],
-    origin.x,
-    origin.y,
-  ];
+  return {
+    matrix: [
+      relativeMatrix[0],
+      relativeMatrix[1],
+      relativeMatrix[2],
+      relativeMatrix[3],
+      cornerPoints.tl.x,
+      cornerPoints.tl.y,
+    ],
+    bounds: calcBounds(cornerPoints),
+  };
 }
 
 /**
