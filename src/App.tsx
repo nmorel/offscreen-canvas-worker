@@ -16,7 +16,15 @@ function EventContainer({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div ref={ref} style={{ width: "100%", height: "100%" }}>
+    <div
+      ref={ref}
+      style={{
+        width: "100%",
+        height: "100%",
+        touchAction: "none",
+        userSelect: "none",
+      }}
+    >
       {children}
     </div>
   );
@@ -63,16 +71,18 @@ const App = observer(function App() {
           <button
             type="button"
             onClick={() => {
-              ctx.store.setUseOffscreenCanvas(!ctx.store.useOffscreenCanvas)
+              ctx.store.setUseOffscreenCanvas(!ctx.store.useOffscreenCanvas);
             }}
           >
-            {ctx.store.useOffscreenCanvas ? 'Use classic' : 'Use offscreen'}
+            {ctx.store.useOffscreenCanvas ? "Use classic" : "Use offscreen"}
           </button>
         )}
       </div>
       {!!ctx.store.screenSize.width && !!ctx.store.screenSize.height && (
         <EventContainer>
-          <Canvas key={ctx.store.useOffscreenCanvas ? 'offscreen' : 'classic'} />
+          <Canvas
+            key={ctx.store.useOffscreenCanvas ? "offscreen" : "classic"}
+          />
         </EventContainer>
       )}
     </div>
