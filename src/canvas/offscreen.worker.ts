@@ -1,5 +1,4 @@
-import { BoardObject } from "../model/boardObject";
-import { ObjectType } from "../typings";
+import { createBoardShape, Shape, ShapeData } from "./Shape";
 
 const ctx: Worker = self as any;
 
@@ -13,19 +12,9 @@ const model = {
     ty: 0,
     scale: 1,
   },
-  objects: new Map<string, BoardObject>(),
-  objectsOrder: [] as string[],
+  shapes: new Map<string, Shape>(),
+  shapesOrder: [] as string[],
 };
-
-function renderObject(obj: BoardObject) {
-  if (obj.objectType !== ObjectType.rectangle) return
-
-  context.save()
-  context.transform(...obj.matrix)
-  context.fillStyle = obj.color
-  context.fillRect(0, 0, obj.width, obj.height)
-  context.restore()
-}
 
 let currentFrame: number;
 function render() {
@@ -49,11 +38,9 @@ function render() {
     model.viewport.ty
   );
 
-  model.objectsOrder.forEach(objId => {
-    const obj = model.objects.get(objId)
-    if (obj) {
-      renderObject(obj)
-    }
+  model.shapesOrder.forEach(shapeId => {
+    const shape = model.shapes.get(shapeId)
+    shape?.render(context)
   })
 
   context.restore();
@@ -85,9 +72,9 @@ ctx.addEventListener("message", ({ data: { type, ...data } }) => {
       break;
     }
     case "objects.init": {
-      data.objects.forEach((obj: BoardObject) => {
-        model.objects.set(obj.id, obj)
-        model.objectsOrder.push(obj.id)
+      data.objects.forEach((obj: ShapeData) => {
+        model.shapes.set(obj.id, createBoardShape(obj))
+        model.shapesOrder.push(obj.id)
       })
       redraw = true;
       break;
