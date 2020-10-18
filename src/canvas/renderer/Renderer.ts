@@ -1,11 +1,21 @@
 import { Bounds } from "../../typings";
 import { createBoardShape, Shape, ShapeData } from "../shapes/Shape";
-import { CanvasRenderer } from "./type";
+import { CanvasRenderer, CanvasRendererHelper } from "./type";
+
+export class RendererHelper implements CanvasRendererHelper {
+  getImageBitmap(id: string, src: string): Promise<ImageBitmap> {
+    return fetch(src)
+      .then((response) => response.blob())
+      .then((blob) => createImageBitmap(blob));
+  }
+}
 
 export class Renderer<
   CANVAS extends HTMLCanvasElement | OffscreenCanvas,
   CONTEXT extends CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
 > implements CanvasRenderer {
+  helper: RendererHelper
+
   canvas: CANVAS;
   context: CONTEXT;
   redraw = true;
@@ -40,12 +50,14 @@ export class Renderer<
   };
 
   constructor(
+    helper: RendererHelper,
     canvas: CANVAS,
     context: CONTEXT,
     screenSize: { width: number; height: number },
     viewport: { tx: number; ty: number; scale: number },
     objects: ShapeData[]
   ) {
+    this.helper = helper
     this.canvas = canvas;
     this.context = context;
     this.setDimensions(screenSize);
@@ -88,7 +100,7 @@ export class Renderer<
     this.shapesOrder.forEach((shapeId) => {
       const shape = this.shapes.get(shapeId);
       if (shape?.isVisible(this.viewportBounds)) {
-        shape?.render(this.context);
+        shape?.render(this.context, this.helper);
       }
     });
 
@@ -108,8 +120,8 @@ export class Renderer<
 
       if (this.fps.lastFps) {
         this.context.save();
-        this.context.fillStyle = "#000"
-        this.context.fillRect(5, 0, 50, 18)
+        this.context.fillStyle = "#000";
+        this.context.fillRect(5, 0, 50, 18);
         this.context.fillStyle = "rgb(0, 255, 0)";
         this.context.font = "14px Arial";
         this.context.fillText(this.fps.lastFps, 8, 14);

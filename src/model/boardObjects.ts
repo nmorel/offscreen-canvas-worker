@@ -5,6 +5,7 @@ import _ from "lodash";
 import { ObjectType } from "../typings";
 import { getRandomColor } from "../helpers/utils";
 import imageUrl from "url:../../public/image.jpg";
+import svgUrl from "url:../../public/fuji1.svg";
 
 export class BoardObjects {
   ctx: OffscreenContext;
@@ -46,6 +47,32 @@ export class BoardObjects {
           width: 1920,
           height: 1080,
           kind: 'jpg'
+        },
+        zIndex: nbItems,
+      },
+      this.ctx
+    );
+    nbItems++;
+
+    // Image svg
+    const idSvg = `id-${_.padStart(`${nbItems}`, 6, "0")}`;
+    objects[idSvg] = createBoardObject(
+      {
+        id: idSvg,
+        objectType: ObjectType.image,
+        coords: {
+          left: -2250,
+          top: -9550,
+        },
+        scale: {
+          scaleX: 10,
+          scaleY: 10,
+        },
+        image: {
+          src: svgUrl,
+          width: 450,
+          height: 450,
+          kind: 'svg'
         },
         zIndex: nbItems,
       },

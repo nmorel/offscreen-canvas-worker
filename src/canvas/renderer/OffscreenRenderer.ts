@@ -1,3 +1,4 @@
+import { Image } from "../../model/image";
 import { ShapeData } from "../shapes/Shape";
 import { CanvasRenderer } from "./type";
 
@@ -22,6 +23,24 @@ export class OffscreenRenderer implements CanvasRenderer {
       },
       [offscreen]
     );
+
+    this.worker.addEventListener("message", ({ data: { type, ...data } }) => {
+      switch (type) {
+        case "getImageBitmap":
+          const image = new window.Image();
+          image.onload = () => {
+            createImageBitmap(image).then((bitmap) =>
+              this.worker.postMessage({
+                type: "getImageBitmap",
+                id: data.id,
+                src: data.src,
+                bitmap,
+              })
+            );
+          };
+          image.src = data.src;
+      }
+    });
   }
 
   setDimensions({ width, height }: { width: number; height: number }): void {

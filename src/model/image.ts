@@ -7,6 +7,7 @@ type ImageData = {
   src: string;
   width: number;
   height: number;
+  kind?: 'jpg' | 'svg'
 };
 
 export class Image extends BaseObject {

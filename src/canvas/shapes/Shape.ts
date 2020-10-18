@@ -5,15 +5,9 @@ import { Rectangle, RectangleData } from "./Rectangle";
 export type ShapeData = RectangleData | ImageData;
 export type Shape = Rectangle | Image;
 
-export function createBoardShape(
-  data: { objectType: ObjectType.rectangle } & Record<string, any>
-): Rectangle;
-export function createBoardShape(
-  data: { objectType: ObjectType.image } & Record<string, any>
-): Image;
-export function createBoardShape(
-  data: { objectType: ObjectType } & Record<string, any>
-): Shape {
+export function createBoardShape(data: RectangleData): Rectangle;
+export function createBoardShape(data: ImageData): Image;
+export function createBoardShape(data: ShapeData): Shape {
   switch (data.objectType) {
     case ObjectType.rectangle:
       return new Rectangle(data as any);

@@ -1,6 +1,6 @@
 import { OffscreenContext } from "../../context";
 import { OffscreenRenderer } from "./OffscreenRenderer";
-import { Renderer } from "./Renderer";
+import { Renderer, RendererHelper } from "./Renderer";
 import { CanvasRenderer } from "./type";
 
 export function createCanvasRenderer(
@@ -22,6 +22,7 @@ export function createCanvasRenderer(
   } else {
     console.log("Using classic Canvas");
     return new Renderer<HTMLCanvasElement, CanvasRenderingContext2D>(
+      new RendererHelper(),
       canvas,
       canvas.getContext("2d", { alpha: true })!,
       screenSize,

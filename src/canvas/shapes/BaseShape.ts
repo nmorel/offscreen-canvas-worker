@@ -1,4 +1,5 @@
 import { Bounds, Matrix, ObjectType } from "../../typings";
+import { CanvasRendererHelper } from "../renderer/type";
 
 export type BaseShapeData = {
   id: string;
@@ -26,15 +27,17 @@ export abstract class BaseShape<T extends BaseShapeData> {
   }
 
   render(
-    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D
+    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+    helper: CanvasRendererHelper
   ): void {
     context.save();
     context.transform(...this.obj.matrix);
-    this.draw(context);
+    this.draw(context, helper);
     context.restore();
   }
 
   abstract draw(
-    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D
+    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+    helper: CanvasRendererHelper
   ): void;
 }

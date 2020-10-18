@@ -5,3 +5,7 @@ export interface CanvasRenderer {
   setViewport(data: { tx: number; ty: number; scale: number }): void;
   destroy(): void
 }
+
+export interface CanvasRendererHelper {
+  getImageBitmap(id: string, src: string, kind?: 'jpg' | 'svg'): Promise<ImageBitmap>
+}
