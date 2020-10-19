@@ -28,9 +28,15 @@ export function Canvas() {
       (viewport) => renderer.setViewport(viewport)
     );
 
+    const animateReaction = reaction(
+      () => ctx.store.animateVpt,
+      (animateVpt) => renderer.setAnimateViewport(animateVpt)
+    );
+
     return () => {
       screenSizeReaction();
       viewportReaction();
+      animateReaction()
       renderer.destroy();
     };
   }, []);

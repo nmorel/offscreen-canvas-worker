@@ -60,6 +60,10 @@ ctx.addEventListener("message", ({ data: { type, ...data } }) => {
       renderer.setViewport(data);
       break;
     }
+    case "animateVpt": {
+      renderer.setAnimateViewport(data.animateVpt);
+      break;
+    }
     case "getImageBitmap": {
       rendererHelper.processImageBitmap(data);
       break;

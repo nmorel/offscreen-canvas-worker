@@ -14,6 +14,7 @@ export class Store {
   objects: BoardObjects;
 
   useOffscreenCanvas = hasOffscreenCanvas;
+  animateVpt = false
 
   constructor(ctx: OffscreenContext) {
     this.ctx = ctx;
@@ -25,6 +26,7 @@ export class Store {
     makeObservable(this, {
       screenSize: observable.shallow,
       useOffscreenCanvas: observable,
+      animateVpt: observable,
       setScreenSize: action,
       setUseOffscreenCanvas: action,
     });
@@ -39,5 +41,9 @@ export class Store {
 
   setUseOffscreenCanvas(useOffscreenCanvas: boolean) {
     this.useOffscreenCanvas = useOffscreenCanvas;
+  }
+
+  setAnimateVpt(animateVpt: boolean) {
+    this.animateVpt = animateVpt;
   }
 }

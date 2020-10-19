@@ -1,6 +1,7 @@
 import { Bounds } from "../../typings";
 import { createBoardShape, Shape, ShapeData } from "../shapes/Shape";
 import { CanvasRenderer, CanvasRendererHelper } from "./type";
+import _ from 'lodash'
 
 export class RendererHelper implements CanvasRendererHelper {
   getImageBitmap(id: string, src: string): Promise<ImageBitmap> {
@@ -37,6 +38,7 @@ export class Renderer<
     width: 0,
     height: 0,
   };
+  animateVpt = false
   shapes = new Map<string, Shape>();
   shapesOrder: string[] = [];
 
@@ -78,7 +80,7 @@ export class Renderer<
   private render() {
     this.currentRaf = requestAnimationFrame(() => this.render());
 
-    if (!this.showFps && !this.redraw) {
+    if (!this.showFps && !this.redraw && !this.animateVpt) {
       return;
     }
 
@@ -87,6 +89,12 @@ export class Renderer<
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.context.save();
+
+    if (this.animateVpt) {
+      this.viewport.tx += _.random(-5, 5)
+      this.viewport.ty += _.random(-5, 5)
+      this.updateViewportBounds()
+    }
 
     this.context.setTransform(
       this.viewport.scale,
@@ -142,6 +150,10 @@ export class Renderer<
     Object.assign(this.viewport, viewport);
     this.updateViewportBounds();
     this.redraw = true;
+  }
+
+  setAnimateViewport(animateVpt: boolean) {
+    this.animateVpt = animateVpt
   }
 
   private updateViewportBounds() {

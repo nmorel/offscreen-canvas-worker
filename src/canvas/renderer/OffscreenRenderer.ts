@@ -58,6 +58,13 @@ export class OffscreenRenderer implements CanvasRenderer {
     });
   }
 
+  setAnimateViewport(animateVpt: boolean): void {
+    this.worker.postMessage({
+      type: "animateVpt",
+      animateVpt,
+    });
+  }
+
   destroy(): void {
     this.worker.terminate();
   }

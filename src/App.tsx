@@ -59,10 +59,12 @@ const App = observer(function App() {
         <button
           type="button"
           onClick={() => {
+            ctx.store.setAnimateVpt(true);
             const now = performance.now();
-            while (performance.now() - now < 2000) {
+            while (performance.now() - now < 4000) {
               // just loop
             }
+            ctx.store.setAnimateVpt(false);
           }}
         >
           Block main thread
